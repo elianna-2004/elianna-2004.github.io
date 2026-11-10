@@ -28,11 +28,11 @@ function init(){
             return {
             // Besides converting the types from string to int,
             // we also simplify the variable
-            //id: +d.ID,
-            //type: d['Primary Type'],
-            //location: d['Location Description'],
-            //year: +d.Year,
-            //code: d['FBI Code'],
+            year: +d.TIME_PERIOD,
+            pollutant: d.POLLUTANT,
+            location: d['Reference area'],
+            unit: d.UNIT_MEASURE,
+            amount: +d.OBS_VALUE,
             //arrest: d.Arrest
          }
         }) 
