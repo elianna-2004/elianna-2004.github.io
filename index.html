@@ -10,16 +10,51 @@
     <div class="container"> <!-- Centers content and sets max width -->
         <h1>Assignment 2: White & Black Hat Visualizations</h1>
         <h2>White Hat Visualization</h2>
+        <p class="caption">All OECD aggregate observations from 2015–2024. The vertical axis starts at zero and the unit is stated explicitly.</p>
         <div id="vis1"></div> <!--  Will hold our visualization (SVG) -->
 
         <h2>Black Hat Visualization</h2>
+        <p class="caption warning">This intentionally misleading version uses only 2018–2020 and turns the OECD series into an arc: the earlier value sits farther out while recent values pull inward, making the decline look more dramatic than a standard time-series chart. Compare it with the complete chart above.</p>
         <div id="vis2"></div> <!--  Will hold our second visualization (SVG) -->
     </div>
     <div>
         <h2>Brief Write-Up of Visualization:</h2>
         <br>
         Team Members: Elianna, Eric<br><br>
-        
+
+        <strong>White Hat Visualization Explanation:</strong><br><br>
+        ----> For Eric to fill out <-----
+
+        <br><br><strong>Black Hat Visualization Explanation:</strong><br><br>
+        Our Black Hat Visualization included the following manipulative techniques:
+        <br>
+        > Cherry-picking the data where the greatest emission drop was seen (2018-2020), and basing the visualization solely on this subset to exaggerate the decline.
+        <br>
+        > Our bubbles were exaggerated in size by going by using a cubic bubble-size scale to make the decline more drastic
+        <br>
+        > The added transition movement of the bubbles take the user's attention and draw attention to the large decrease, persuading
+        the viewer that a significant decline in emissions has occurred.
+        <br>
+        > We also chose a spiral display over a time-series chart for a harder comparison of the data
+        <br>
+         We used misleading/vague labels (such as "Earlier", "Recent", "Latest") to hide the true 3-year subset data span
+        <br>
+        > Our visualization is also titled with a misleading headine that makes users think pollution levels have stayed at
+        a decline, however after 2020 in our dataset, the emissions rise again
+
+        <br><br>
+        Development Process:<br><br>
+
+        For development we split the tasks by the two visualizations, meaning one person was in charge of the White Hate Visualization 
+        and the other was in charge of the Black Hat Visualization. Given we have an init() function and two svg canvases defined,
+        development was simple as we each created a distinct function for our visualization and called it in the init() function (also appended
+        to our corresponding svg canvas). Each visualization took roughly 4-5 hours, with an additional 1-2 hours for write-ups, deployemnts, and submission
+        work. Planning and figuring out how to use the data took the most time, especially for the Black Hat Visualization, in terms of
+        finding a suitable subset of the data to highlight a desired outcome.<br><br>
+
+        For the Black Hat Visualization, we derived implementation details from our previous spiral Lab 7 and the vibe coding from Lab 8.
+        We also utilized the AI Coding Tool Codex to assist with the implementation, stylistic additions, and debugging of the visualization.
+        <br><br>
         <h3>Utilized Data:</h3>
         <a href="https://data-explorer.oecd.org/vis?df[ds]=DisseminateFinalDMZ&df[id]=DSD_AIR_GHG%40DF_AIR_GHG&df[ag]=OECD.ENV.EPI&dq=.A.GHG._T.KG_CO2E_PS&pd=2015,&to[TIME_PERIOD]=false&vw=ov"> OECD Data Explorer: Air emissions - Greenhouse gas emissions Inventories</a>
 

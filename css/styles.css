@@ -23,3 +23,70 @@
     margin: 2rem 0;
     border: 1px solid #ccc; /*otherwise you can't see this part*/
 }
+
+.caption {
+    font-weight: normal;
+    max-width: 1000px;
+    margin: 0;
+    color: #444;
+}
+
+.warning {
+    color: #9b2c22;
+}
+
+.chart-note {
+    font-size: 14px;
+    font-weight: bold;
+    fill: #1769aa;
+}
+
+.black-note {
+    fill: #c0392b;
+}
+
+.chart-title {
+    font-size: 24px;
+    font-weight: bold;
+    fill: #222;
+}
+
+svg text {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+}
+
+.legend text {
+    font-size: 13px;
+    fill: #333;
+}
+
+.legend-title {
+    font-weight: bold;
+}
+
+.legend-box {
+    fill: rgba(255, 255, 255, 0.78);
+    stroke: #71879a;
+    stroke-width: 1.5px;
+}
+
+.spiral-bubble {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bubblePulse 2.4s ease-in-out infinite;
+}
+
+.spiral-wave {
+    stroke-dasharray: 10 14;
+    animation: waveFlow 5s linear infinite;
+}
+
+@keyframes bubblePulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.82); }
+    50% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes waveFlow {
+    to { stroke-dashoffset: -48; }
+}
