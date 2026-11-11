@@ -59,29 +59,31 @@ function drawAxes(chart, x, y) {
     chart.append('g').call(d3.axisLeft(y));
 }
 
-// Honest view: all available OECD years, a zero baseline, and an explicit unit.
+// Honest view: all available OECD years, a 9 baseline, and an explicit unit.
 function drawWhiteHat(data) {
     const x = d3.scaleLinear().domain(d3.extent(data, d => d.year)).range([0, width]);
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.amount) * 1.12]).nice().range([height, 0]);
+    const y = d3.scaleLinear().domain([9, d3.max(data, d => d.amount) * 1.12]).nice().range([height, 0]);
     drawAxes(svg, x, y);
     svg.append('text').attr('x', width / 2).attr('y', height + 52)
-        .attr('text-anchor', 'middle').text('Year');
+        .attr('text-anchor', 'middle').text('Year')
+        .style('font-weight', 'bold');
     svg.append('text').attr('transform', 'rotate(-90)').attr('x', -height / 2).attr('y', -62)
-        .attr('text-anchor', 'middle').text('GHG emissions per person (thousand kg CO₂e)');
+        .attr('text-anchor', 'middle').text('GHG emissions per person (thousand kg CO₂e)')
+        .style('font-weight', 'bold');
     svg.append('path').datum(data).attr('fill', 'none').attr('stroke', '#1769aa').attr('stroke-width', 3)
         .attr('d', d3.line().x(d => x(d.year)).y(d => y(d.amount)));
     svg.selectAll('.white-point').data(data).enter().append('circle').attr('class', 'white-point')
         .attr('cx', d => x(d.year)).attr('cy', d => y(d.amount)).attr('r', 4).attr('fill', '#1769aa')
         .append('title').text(d => `${d.year}: ${d.amount.toFixed(2)} thousand kg CO₂e/person`);
-    svg.append('text').attr('class', 'chart-note').attr('x', width).attr('y', -28)
-        .attr('text-anchor', 'end').text('OECD aggregate • 2015–2024 • complete range');
+    svg.append('text').attr('class', 'chart-note').attr('x', width*3/4).attr('y', -28)
+        .attr('text-anchor', 'end').text('OECD Aggregate • 2015–2024 • Complete Range');
 
     // Keep the black-hat legend unchanged and add a separate key for this chart.
     const whiteLegend = svg.append('g').attr('class', 'legend white-legend')
-        .attr('transform', `translate(${width - 220},${height - 92})`);
+        .attr('transform', `translate(${width - 260},${height - 92})`);
     whiteLegend.append('rect').attr('class', 'legend-box')
         .attr('x', -12).attr('y', -26)
-        .attr('width', 220).attr('height', 74)
+        .attr('width', 260).attr('height', 74)
         .attr('rx', 8).attr('ry', 8);
     whiteLegend.append('text').attr('class', 'legend-title').attr('x', 0).attr('y', -8)
         .text('Emissions trend');
