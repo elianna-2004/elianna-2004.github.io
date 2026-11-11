@@ -70,11 +70,81 @@ function drawWhiteHat(data) {
     svg.append('text').attr('transform', 'rotate(-90)').attr('x', -height / 2).attr('y', -62)
         .attr('text-anchor', 'middle').text('GHG emissions per person (thousand kg CO₂e)')
         .style('font-weight', 'bold');
-    svg.append('path').datum(data).attr('fill', 'none').attr('stroke', '#1769aa').attr('stroke-width', 3)
-        .attr('d', d3.line().x(d => x(d.year)).y(d => y(d.amount)));
+    // Animate in year order: a dot grows, then the line extends to the next dot.
+    data = data.slice().sort((a, b) => a.year - b.year);
+    const dotTime = 300;   // ms for a dot to grow
+    const lineTime = 300;  // ms for the line to reach the next dot
+    const stepTime = dotTime + lineTime;
+    const dotRadius = 4;
+
+    // One segment per pair of consecutive years, drawn from the earlier dot to the later one.
+    svg.selectAll('.white-segment').data(data.slice(1)).enter().append('line')
+        .attr('class', 'white-segment')
+        .attr('stroke', '#1769aa').attr('stroke-width', 3).attr('stroke-linecap', 'round')
+        .attr('x1', (d, i) => x(data[i].year)).attr('y1', (d, i) => y(data[i].amount))
+        .attr('x2', (d, i) => x(data[i].year)).attr('y2', (d, i) => y(data[i].amount))
+        .transition().delay((d, i) => i * stepTime + dotTime).duration(lineTime).ease(d3.easeLinear)
+        .attr('x2', d => x(d.year)).attr('y2', d => y(d.amount));
+
+    // Hover box showing the change from the previous year.
+    const whiteTooltip = d3.select('#vis1')
+        .style('position', 'relative')
+        .append('div')
+        .attr('class', 'chart-tooltip')
+        .style('position', 'absolute')
+        .style('pointer-events', 'none')
+        .style('padding', '8px 10px')
+        .style('border', '1px solid #71879a')
+        .style('border-radius', '4px')
+        .style('background', 'rgba(255, 255, 255, 0.95)')
+        .style('color', '#333')
+        .style('font-size', '13px')
+        .style('font-weight', 'normal')
+        .style('line-height', '1.5')
+        .style('white-space', 'nowrap')
+        .style('opacity', 0);
+
+    function tooltipHtml(d) {
+        const i = data.indexOf(d);
+        let change = 'First year in the data, so no previous year to compare';
+        if (i > 0) {
+            const prev = data[i - 1];
+            const diff = d.amount - prev.amount;
+            const pct = (diff / prev.amount) * 100;
+            const arrow = diff < 0 ? '▼' : diff > 0 ? '▲' : '•';
+            const sign = diff > 0 ? '+' : diff < 0 ? '−' : '';
+            change = `Change from ${prev.year}: ${arrow} ${sign}${Math.abs(diff).toFixed(2)} `
+                + `(${sign}${Math.abs(pct).toFixed(1)}%)`;
+        }
+        return `<strong>${d.year}</strong><br>`
+            + `${d.amount.toFixed(2)} thousand kg CO₂e per person<br>${change}`;
+    }
+
+    function moveTooltip(event) {
+        const [px, py] = d3.pointer(event, d3.select('#vis1').node());
+        const boxWidth = whiteTooltip.node().offsetWidth;
+        // Flip to the left of the cursor when the box would run past the chart's right edge.
+        const left = px + 14 + boxWidth > width + margin.left + margin.right
+            ? px - 14 - boxWidth : px + 14;
+        whiteTooltip.style('left', `${left}px`).style('top', `${py - 12}px`);
+    }
+
     svg.selectAll('.white-point').data(data).enter().append('circle').attr('class', 'white-point')
-        .attr('cx', d => x(d.year)).attr('cy', d => y(d.amount)).attr('r', 4).attr('fill', '#1769aa')
-        .append('title').text(d => `${d.year}: ${d.amount.toFixed(2)} thousand kg CO₂e/person`);
+        .attr('cx', d => x(d.year)).attr('cy', d => y(d.amount)).attr('r', 0).attr('fill', '#1769aa')
+        .style('pointer-events', 'none') // no hover until the dot has finished growing
+        .on('mouseover', function(event, d) {
+            d3.select(this).transition().duration(120).attr('r', dotRadius + 3);
+            whiteTooltip.html(tooltipHtml(d)).style('opacity', 1);
+            moveTooltip(event);
+        })
+        .on('mousemove', moveTooltip)
+        .on('mouseout', function() {
+            d3.select(this).transition().duration(120).attr('r', dotRadius);
+            whiteTooltip.style('opacity', 0);
+        })
+        .transition().delay((d, i) => i * stepTime).duration(dotTime).ease(d3.easeBackOut)
+        .attr('r', dotRadius)
+        .on('end', function() { d3.select(this).style('pointer-events', 'all'); });
     svg.append('text').attr('class', 'chart-note').attr('x', width*3/4).attr('y', -28)
         .attr('text-anchor', 'end').text('OECD Aggregate • 2015–2024 • Complete Range');
 
